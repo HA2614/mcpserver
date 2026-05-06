@@ -1,0 +1,61 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mcp_pm
+      REDIS_URL: redis://redis:6379
+      FS_BASE_PATH: /workspace
+      STATIC_FRONTEND_DIR: /app/frontend/dist
+      AI_PROVIDER: ${CONTAINER_AI_PROVIDER:-openai}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      CODE_AI_MODEL: ${CODE_AI_MODEL:-gpt-5.5}
+      CODEX_MODEL: ${CODEX_MODEL:-}
+      CODEX_SUMMARY_MODEL: ${CODEX_SUMMARY_MODEL:-gpt-5.3-codex}
+      CODEX_BIN: ${CONTAINER_CODEX_BIN:-codex}
+    ports:
+      - "4000:4000"
+    volumes:
+      - workspace:/workspace
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mcp_pm
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mcp_pm"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  pgdata:
+  redisdata:
+  workspace:

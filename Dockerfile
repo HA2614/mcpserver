@@ -1,0 +1,24 @@
+FROM node:22-bookworm-slim AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY backend/package.json backend/package.json
+COPY frontend/package.json frontend/package.json
+RUN npm ci
+
+FROM deps AS build
+WORKDIR /app
+COPY . .
+RUN npm --workspace frontend run build
+
+FROM node:22-bookworm-slim AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+COPY package.json package-lock.json ./
+COPY backend/package.json backend/package.json
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/backend/node_modules ./backend/node_modules
+COPY backend ./backend
+COPY desktop ./desktop
+COPY --from=build /app/frontend/dist ./frontend/dist
+EXPOSE 4000
+CMD ["sh", "-c", "node backend/src/migrate.js && node backend/src/server.js"]
