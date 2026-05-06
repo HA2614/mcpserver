@@ -39,4 +39,4 @@ Backend workspace equivalents:
 - Structure generation options: `profile`, `dryRun`, `overwriteStrategy`
 
 ## Filesystem safety
-Filesystem endpoints are restricted to `FS_BASE_PATH` (default `C:\Users\Hayan\Downloads`).
+Filesystem endpoints are restricted to `FS_BASE_PATH` (default: the backend working directory).

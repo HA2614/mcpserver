@@ -261,7 +261,7 @@ async function generateStructureFlow() {
 
   const projectRes = await query("SELECT * FROM projects WHERE id=$1", [activeProjectId]);
   const opts = await inquirer.prompt([
-    { type: "input", name: "targetPath", message: "Target base path:", default: "C:\\Users\\Hayan\\Downloads\\structure" },
+    { type: "input", name: "targetPath", message: "Target base path:", default: path.join(repoRoot, "structure") },
     { type: "list", name: "profile", message: "Scaffold profile", choices: ["web+api", "web", "api", "docs-only"] },
     { type: "confirm", name: "dryRun", message: "Dry run only?", default: true },
     { type: "list", name: "overwriteStrategy", message: "Overwrite strategy", choices: ["skip_existing", "overwrite_all", "prompt_conflicts"] }
@@ -288,7 +288,7 @@ async function generateStructureFlow() {
 
 async function fileExplorerFlow() {
   header("Terminal File Explorer");
-  let current = "C:\\Users\\Hayan\\Downloads\\structure";
+  let current = path.join(repoRoot, "structure");
   while (true) {
     const listing = await listDirectories(current);
     header("Terminal File Explorer");
@@ -345,7 +345,7 @@ async function summarizeCodebaseFlow() {
       type: "input",
       name: "targetPath",
       message: "Folder path to summarize:",
-      default: "C:\\Users\\Hayan\\Downloads\\mcpserver"
+      default: repoRoot
     }
   ]);
 
@@ -380,7 +380,7 @@ async function summarizeCodebaseFlow() {
 async function aiCodeFlow() {
   header("AI Code Worker");
   const answers = await inquirer.prompt([
-    { type: "input", name: "rootPath", message: "Project root:", default: "C:\\Users\\Hayan\\Downloads\\mcpserver" },
+    { type: "input", name: "rootPath", message: "Project root:", default: repoRoot },
     { type: "editor", name: "userPrompt", message: "Code prompt:" }
   ]);
   const job = await startCodeJob({ rootPath: answers.rootPath, userPrompt: answers.userPrompt });

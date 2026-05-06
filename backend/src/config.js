@@ -29,6 +29,6 @@ export const config = {
   codexSummaryModel: process.env.CODEX_SUMMARY_MODEL || "gpt-5.3-codex",
   codexTimeoutMs: Number(process.env.CODEX_TIMEOUT_MS || 90000),
   codexBin: process.env.CODEX_BIN || "codex",
-  fsBasePath: process.env.FS_BASE_PATH || "C:\\Users\\Hayan\\Downloads",
+  fsBasePath: process.env.FS_BASE_PATH || process.cwd(),
   staticFrontendDir: process.env.STATIC_FRONTEND_DIR || ""
 };

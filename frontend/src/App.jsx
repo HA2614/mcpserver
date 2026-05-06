@@ -29,7 +29,7 @@ import { AnalyzerView } from "@/features/analyzer-view";
 import { CodeWorkerView } from "@/features/code-worker-view";
 import { SettingsView } from "@/features/settings-view";
 
-const DEFAULT_ROOT = "C:\\\\Users\\\\Hayan\\\\Downloads";
+const DEFAULT_ROOT = import.meta.env.VITE_DEFAULT_ROOT || "/workspace";
 
 function emptyForm() {
   return { name: "", goals: "", techStack: "", timeline: "", budget: "" };

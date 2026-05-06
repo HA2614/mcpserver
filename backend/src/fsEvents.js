@@ -44,7 +44,7 @@ function releaseWatcher(rootPath) {
 }
 
 export function registerFsEventStream(req, res) {
-  const rootParam = String(req.query.root || "").trim() || process.env.FS_BASE_PATH || "C:\\Users\\Hayan\\Downloads";
+  const rootParam = String(req.query.root || "").trim() || process.env.FS_BASE_PATH || process.cwd();
   const root = ensureWatcher(rootParam);
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
